@@ -27,14 +27,15 @@ def print_comparison(layer, scale_factor, original_weights, modified_weights, nu
 
     for original, modified in zip(sampled_original, sampled_new):
         print(f"{original:8.4f} | {modified:8.4f}")
-    # print("\n")  # Add a newline to separate different layers
 
-def main():
+def rescale():
     parser = argparse.ArgumentParser(description='Modify DICOM file weights.')
     parser.add_argument('-i', '--input', required=True, help='Path to input DICOM file')
     parser.add_argument('-w', '--weights', required=True, help='Path to weights CSV file')
     parser.add_argument('-o', '--output', required=True, help='Path to output DICOM file')
     parser.add_argument('-p', '--print', type=int, default=None, help='Number of random values to print for comparison')
+    parser.add_argument('-pd', '--plan_dose', type=float, default=None, help='Plan dose')
+    parser.add_argument('-rd', '--rescale_dose', type=float, default=None, help='Rescaled dose')
     args = parser.parse_args()
 
     dicom_data = pydicom.dcmread(args.input)
@@ -42,15 +43,21 @@ def main():
     scale_factors = read_weights_from_csv(args.weights)
     ion_control_point_sequence = new_dicom_data.IonBeamSequence[0].IonControlPointSequence
 
+    plan_rescale_ratio = 1.0  # Initialize to 1 so it doesn't affect multiplication if not set
+    if args.plan_dose is not None and args.rescale_dose is not None:
+        plan_rescale_ratio = args.rescale_dose / args.plan_dose
+
     for i, scale_factor in zip(range(0, len(ion_control_point_sequence), 2), scale_factors):
         weights = ion_control_point_sequence[i].ScanSpotMetersetWeights
-        new_weights = [w * scale_factor for w in weights]
+        # Modify the weights with both scale_factor and plan_rescale_ratio
+        new_weights = [w * scale_factor * plan_rescale_ratio for w in weights]
         ion_control_point_sequence[i].ScanSpotMetersetWeights = new_weights
 
         if args.print:
             print_comparison(i // 2 + 1, scale_factor, weights, new_weights, args.print)
+
     new_dicom_data.save_as(args.output)
     print(f"Weight rescaled paln is saved as {args.output}")
 
 if __name__ == "__main__":
-    main()
+    rescale()
