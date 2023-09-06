@@ -31,33 +31,63 @@ def print_comparison(layer, scale_factor, original_weights, modified_weights, nu
 def rescale():
     parser = argparse.ArgumentParser(description='Modify DICOM file weights.')
     parser.add_argument('-i', '--input', required=True, help='Path to input DICOM file')
-    parser.add_argument('-w', '--weights', required=True, help='Path to weights CSV file')
+    parser.add_argument('-w', '--weights', required=False, help='Path to weights CSV file', default=None)
     parser.add_argument('-o', '--output', required=True, help='Path to output DICOM file')
     parser.add_argument('-p', '--print', type=int, default=None, help='Number of random values to print for comparison')
     parser.add_argument('-pd', '--plan_dose', type=float, default=None, help='Plan dose')
     parser.add_argument('-rd', '--rescale_dose', type=float, default=None, help='Rescaled dose')
     args = parser.parse_args()
 
+    # Check if neither weights nor rescale_dose/plan_dose are provided
+    if args.weights is None and (args.plan_dose is None or args.rescale_dose is None):
+        print("Error: No scaling factor is given for rescaling the plan or spots.")
+        return
+
     dicom_data = pydicom.dcmread(args.input)
     new_dicom_data = copy.deepcopy(dicom_data)
-    scale_factors = read_weights_from_csv(args.weights)
+
+    scale_factors = []
+    if args.weights:
+        scale_factors = read_weights_from_csv(args.weights)
+
     ion_control_point_sequence = new_dicom_data.IonBeamSequence[0].IonControlPointSequence
 
     plan_rescale_ratio = 1.0  # Initialize to 1 so it doesn't affect multiplication if not set
     if args.plan_dose is not None and args.rescale_dose is not None:
         plan_rescale_ratio = args.rescale_dose / args.plan_dose
 
-    for i, scale_factor in zip(range(0, len(ion_control_point_sequence), 2), scale_factors):
+    total_original_cumulative_weight = 0.0
+    total_new_cumulative_weight = 0.0
+
+    for i in range(0, len(ion_control_point_sequence), 2):
         weights = ion_control_point_sequence[i].ScanSpotMetersetWeights
+        original_cumulative_weight = sum(weights)
+        total_original_cumulative_weight += original_cumulative_weight  # Add to total original cumulative weight
+
+        # Use scale factor if available, otherwise use 1
+        scale_factor = scale_factors[i // 2] if scale_factors else 1
+
         # Modify the weights with both scale_factor and plan_rescale_ratio
         new_weights = [w * scale_factor * plan_rescale_ratio for w in weights]
-        ion_control_point_sequence[i].ScanSpotMetersetWeights = new_weights
+        new_cumulative_weight = sum(new_weights)  # Calculate the new cumulative weight
+        total_new_cumulative_weight += new_cumulative_weight  # Add to total new cumulative weight
+
+        new_dicom_data.IonBeamSequence[0].IonControlPointSequence[i].ScanSpotMetersetWeights = new_weights
+        new_dicom_data.IonBeamSequence[0].IonControlPointSequence[i].CumulativeMetersetWeight = new_cumulative_weight
+
+        print(f"Layer {i // 2 + 1} Cumulative Weight Before: {original_cumulative_weight}")
+        print(f"Layer {i // 2 + 1} Cumulative Weight After: {new_cumulative_weight}")
 
         if args.print:
             print_comparison(i // 2 + 1, scale_factor, weights, new_weights, args.print)
 
+
+    new_dicom_data.IonBeamSequence[0].FinalCumulativeMetersetWeight = total_new_cumulative_weight
+    print(f"Total Cumulative Weight Before: {total_original_cumulative_weight}")
+    print(f"Total Cumulative Weight After: {total_new_cumulative_weight}")
+
     new_dicom_data.save_as(args.output)
-    print(f"Weight rescaled paln is saved as {args.output}")
+    print(f"Weight rescaled plan is saved as {args.output}")
 
 if __name__ == "__main__":
     rescale()
