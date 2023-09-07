@@ -59,30 +59,38 @@ def rescale():
     total_original_cumulative_weight = 0.0
     total_new_cumulative_weight = 0.0
 
-    for i in range(0, len(ion_control_point_sequence), 2):
+    for i in range(0, len(ion_control_point_sequence)):
         weights = ion_control_point_sequence[i].ScanSpotMetersetWeights
-        original_cumulative_weight = sum(weights)
+        original_cumulative_weight = new_dicom_data.IonBeamSequence[0].IonControlPointSequence[i].CumulativeMetersetWeight
         total_original_cumulative_weight += original_cumulative_weight  # Add to total original cumulative weight
 
         # Use scale factor if available, otherwise use 1
-        scale_factor = scale_factors[i // 2] if scale_factors else 1
+        scale_factor = scale_factors[i] if scale_factors else 1
 
         # Modify the weights with both scale_factor and plan_rescale_ratio
         new_weights = [w * scale_factor * plan_rescale_ratio for w in weights]
-        new_cumulative_weight = sum(new_weights)  # Calculate the new cumulative weight
+        print("length of weights", len(weights))
+        for w in weights:
+            print('wt: ',w)
+        new_cumulative_weight = original_cumulative_weight * scale_factor * plan_rescale_ratio
+        #sum(new_weights)  # Calculate the new cumulative weight
         total_new_cumulative_weight += new_cumulative_weight  # Add to total new cumulative weight
 
         new_dicom_data.IonBeamSequence[0].IonControlPointSequence[i].ScanSpotMetersetWeights = new_weights
         new_dicom_data.IonBeamSequence[0].IonControlPointSequence[i].CumulativeMetersetWeight = new_cumulative_weight
 
-        print(f"Layer {i // 2 + 1} Cumulative Weight Before: {original_cumulative_weight}")
-        print(f"Layer {i // 2 + 1} Cumulative Weight After: {new_cumulative_weight}")
+        print(f"Layer {i} Cumulative Weight Before: {original_cumulative_weight}")
+        print(f"Layer {i} Cumulative Weight After: {new_cumulative_weight}")
 
         if args.print:
             print_comparison(i // 2 + 1, scale_factor, weights, new_weights, args.print)
 
+    new_dicom_data.IonBeamSequence[0].IonControlPointSequence[-1].CumulativeMetersetWeight = total_new_cumulative_weight
+    for i in range(0, len(ion_control_point_sequence)):
+        new_dicom_data.IonBeamSequence[0].IonControlPointSequence[i].CumulativeDoseReferenceCoefficie = new_dicom_data.IonBeamSequence[0].IonControlPointSequence[i].CumulativeMetersetWeight/ total_new_cumulative_weight
 
     new_dicom_data.IonBeamSequence[0].FinalCumulativeMetersetWeight = total_new_cumulative_weight
+    new_dicom_data.FractionGroupSequence[0].ReferencedBeamSequence.BeamMeterset = (dicom_data.IonBeamSequence[0].FinalCumulativeMetersetWeight/original_cumulative_weight) *total_new_cumulative_weight
     print(f"Total Cumulative Weight Before: {total_original_cumulative_weight}")
     print(f"Total Cumulative Weight After: {total_new_cumulative_weight}")
 
