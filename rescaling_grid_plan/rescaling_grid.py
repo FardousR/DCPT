@@ -4,6 +4,7 @@ import random
 import pydicom
 import copy
 
+
 def read_weights_from_csv(csv_file_path):
     weights = []
     with open(csv_file_path, 'r') as csvfile:
@@ -11,6 +12,7 @@ def read_weights_from_csv(csv_file_path):
         for row in csvreader:
             weights.append(float(row[0]))
     return weights
+
 
 def print_comparison(layer, scale_factor, original_weights, modified_weights, num_values):
     print(f"\nLayer {layer}  Scale Factor {scale_factor}")
@@ -27,6 +29,7 @@ def print_comparison(layer, scale_factor, original_weights, modified_weights, nu
 
     for original, modified in zip(sampled_original, sampled_new):
         print(f"{original:8.4f} | {modified:8.4f}")
+
 
 def rescale():
     parser = argparse.ArgumentParser(description='Modify DICOM file weights.')
@@ -81,13 +84,13 @@ def rescale():
         if args.print:
             print_comparison(i // 2 + 1, scale_factor, weights, new_weights, args.print)
 
-
     new_dicom_data.IonBeamSequence[0].FinalCumulativeMetersetWeight = total_new_cumulative_weight
     print(f"Total Cumulative Weight Before: {total_original_cumulative_weight}")
     print(f"Total Cumulative Weight After: {total_new_cumulative_weight}")
 
     new_dicom_data.save_as(args.output)
     print(f"Weight rescaled plan is saved as {args.output}")
+
 
 if __name__ == "__main__":
     rescale()

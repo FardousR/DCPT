@@ -1,0 +1,435 @@
+(0002, 0000) File Meta Information Group Length  UL: 190
+(0002, 0001) File Meta Information Version       OB: b'\x00\x01'
+(0002, 0002) Media Storage SOP Class UID         UI: RT Ion Plan Storage
+(0002, 0003) Media Storage SOP Instance UID      UI: 1.2.246.352.71.5.647773353398.64177.20220609194951
+(0002, 0010) Transfer Syntax UID                 UI: Implicit VR Little Endian
+(0002, 0012) Implementation Class UID            UI: 1.2.246.352.43077212.6
+(0002, 0013) Implementation Version Name         SH: 'DicomEdit 2.0.0'
+-------------------------------------------------
+(0008, 0005) Specific Character Set              CS: 'ISO_IR 192'
+(0008, 0012) Instance Creation Date              DA: '20220610'
+(0008, 0013) Instance Creation Time              TM: '183000'
+(0008, 0016) SOP Class UID                       UI: RT Ion Plan Storage
+(0008, 0018) SOP Instance UID                    UI: 1.2.246.352.71.5.647773353398.64177.20220609194951
+(0008, 0020) Study Date                          DA: '20190916'
+(0008, 0021) Series Date                         DA: '20220609'
+(0008, 0030) Study Time                          TM: '124408.887'
+(0008, 0031) Series Time                         TM: '194929.863'
+(0008, 0050) Accession Number                    SH: ''
+(0008, 0060) Modality                            CS: 'RTPLAN'
+(0008, 0070) Manufacturer                        LO: 'Varian Medical Systems'
+(0008, 0080) Institution Name                    LO: 'Aarhus University Hospital'
+(0008, 0090) Referring Physician's Name          PN: ''
+(0008, 1010) Station Name                        SH: 'VADBRES201'
+(0008, 1030) Study Description                   LO: ''
+(0008, 103e) Series Description                  LO: 'Target_16mm_2'
+(0008, 1040) Institutional Department Name       LO: 'DCPT'
+(0008, 1070) Operators' Name                     PN: 'Mateusz Sitarz'
+(0008, 1090) Manufacturer's Model Name           LO: 'ARIA RadOnc'
+(0010, 0010) Patient's Name                      PN: 'matsit^mice2020'
+(0010, 0020) Patient ID                          LO: 'mice2020'
+(0010, 0030) Patient's Birth Date                DA: ''
+(0010, 0040) Patient's Sex                       CS: ''
+(0018, 1000) Device Serial Number                LO: '647773353398'
+(0018, 1020) Software Versions                   LO: '16.1.4'
+(0020, 000d) Study Instance UID                  UI: 1.2.246.352.205.5379576546120926927.16596583169698917258
+(0020, 000e) Series Instance UID                 UI: 1.2.246.352.71.2.647773353398.892750.20220609194929
+(0020, 0010) Study ID                            SH: 'Phantom1'
+(0020, 0011) Series Number                       IS: '95'
+(0020, 0052) Frame of Reference UID              UI: 1.2.246.352.205.5293866479401426372.4409618553988963736
+(0020, 1040) Position Reference Indicator        LO: ''
+(300a, 0002) RT Plan Label                       SH: 'Target_16mm_2'
+(300a, 0006) RT Plan Date                        DA: '20220609'
+(300a, 0007) RT Plan Time                        TM: '195137.027'
+(300a, 000a) Plan Intent                         CS: 'CURATIVE'
+(300a, 000c) RT Plan Geometry                    CS: 'PATIENT'
+(300a, 0010)  Dose Reference Sequence  1 item(s) ---- 
+   (300a, 0012) Dose Reference Number               IS: '1'
+   (300a, 0013) Dose Reference UID                  UI: 1.2.246.352.71.10.361940808526.5131.20190916150554
+   (300a, 0014) Dose Reference Structure Type       CS: 'SITE'
+   (300a, 0016) Dose Reference Description          LO: 'Target1'
+   (300a, 0020) Dose Reference Type                 CS: 'ORGAN_AT_RISK'
+   (300a, 0023) Delivery Maximum Dose               DS: '2.0'
+   (300a, 002c) Organ at Risk Maximum Dose          DS: '2.0'
+   (3267, 0010) Private Creator                     VR.LO: 'Varian Medical Systems VISION 3267'
+   (3267, 1000) Private tag data                    VR.UN: b'Target'
+   ---------
+(300a, 0070)  Fraction Group Sequence  1 item(s) ---- 
+   (300a, 0071) Fraction Group Number               IS: '1'
+   (300a, 0078) Number of Fractions Planned         IS: '1'
+   (300a, 0080) Number of Beams                     IS: '1'
+   (300a, 00a0) Number of Brachy Application Setups IS: '0'
+   (300c, 0004)  Referenced Beam Sequence  1 item(s) ---- 
+      (300a, 0083) Referenced Dose Reference UID       UI: 1.2.246.352.71.10.361940808526.5131.20190916150554
+      (300a, 0084) Beam Dose                           DS: '2.2'
+      (300a, 0086) Beam Meterset                       DS: '22790.02'
+      (300c, 0006) Referenced Beam Number              IS: '1'
+      (3249, 0010) Private Creator                     VR.LO: 'Varian Medical Systems VISION 3249'
+      (3249, 1010) Private tag data                    VR.UN: Array of 50 elements
+      ---------
+   ---------
+(300a, 0180)  Patient Setup Sequence  1 item(s) ---- 
+   (0018, 5100) Patient Position                    CS: 'HFS'
+   (300a, 0182) Patient Setup Number                IS: '1'
+   (300a, 01b0) Setup Technique                     CS: 'ISOCENTRIC'
+   ---------
+(300a, 03a0)  Ion Tolerance Table Sequence  1 item(s) ---- 
+   (300a, 0042) Tolerance Table Number              IS: '1'
+   (300a, 0043) Tolerance Table Label               SH: 'T1'
+   (300a, 0044) Gantry Angle Tolerance              DS: '0.5'
+   (300a, 0048)  Beam Limiting Device Tolerance Sequence  2 item(s) ---- 
+      (300a, 004a) Beam Limiting Device Position Toler DS: '0.0'
+      (300a, 00b8) RT Beam Limiting Device Type        CS: 'X'
+      ---------
+      (300a, 004a) Beam Limiting Device Position Toler DS: '0.0'
+      (300a, 00b8) RT Beam Limiting Device Type        CS: 'Y'
+      ---------
+   (300a, 004b) Snout Position Tolerance            FL: 5.0
+   (300a, 004c) Patient Support Angle Tolerance     DS: '3.0'
+   (300a, 004f) Table Top Pitch Angle Tolerance     FL: 3.0
+   (300a, 0050) Table Top Roll Angle Tolerance      FL: 3.0
+   (300a, 0051) Table Top Vertical Position Toleran DS: '20.0'
+   (300a, 0052) Table Top Longitudinal Position Tol DS: '20.0'
+   (300a, 0053) Table Top Lateral Position Toleranc DS: '20.0'
+   ---------
+(300a, 03a2)  Ion Beam Sequence  1 item(s) ---- 
+   (0008, 0070) Manufacturer                        LO: 'Varian Medical System Particle Therapy'
+   (0008, 1090) Manufacturer's Model Name           LO: 'VPT'
+   (300a, 00b2) Treatment Machine Name              SH: 'TR4'
+   (300a, 00b3) Primary Dosimeter Unit              CS: 'MU'
+   (300a, 00c0) Beam Number                         IS: '1'
+   (300a, 00c2) Beam Name                           LO: 'Field 1'
+   (300a, 00c4) Beam Type                           CS: 'STATIC'
+   (300a, 00c6) Radiation Type                      CS: 'PROTON'
+   (300a, 00ce) Treatment Delivery Type             CS: 'TREATMENT'
+   (300a, 00d0) Number of Wedges                    IS: '0'
+   (300a, 00e0) Number of Compensators              IS: '0'
+   (300a, 00ed) Number of Boli                      IS: '0'
+   (300a, 00f0) Number of Blocks                    IS: '0'
+   (300a, 010e) Final Cumulative Meterset Weight    DS: '10359.1'
+   (300a, 0110) Number of Control Points            IS: '16'
+   (300a, 0308) Scan Mode                           CS: 'MODULATED'
+   (300a, 030a) Virtual Source-Axis Distances       FL: [2000.0, 2560.0]
+   (300a, 030c)  Snout Sequence  1 item(s) ---- 
+      (300a, 030f) Snout ID                            SH: 'S1'
+      ---------
+   (300a, 0312) Number of Range Shifters            IS: '0'
+   (300a, 0330) Number of Lateral Spreading Devices IS: '2'
+   (300a, 0332)  Lateral Spreading Device Sequence  2 item(s) ---- 
+      (300a, 0334) Lateral Spreading Device Number     IS: '1'
+      (300a, 0336) Lateral Spreading Device ID         SH: 'MagnetX'
+      (300a, 0338) Lateral Spreading Device Type       CS: 'MAGNET'
+      ---------
+      (300a, 0334) Lateral Spreading Device Number     IS: '2'
+      (300a, 0336) Lateral Spreading Device ID         SH: 'MagnetY'
+      (300a, 0338) Lateral Spreading Device Type       CS: 'MAGNET'
+      ---------
+   (300a, 0340) Number of Range Modulators          IS: '0'
+   (300a, 0350) Patient Support Type                CS: 'TABLE'
+   (300a, 0352) Patient Support ID                  SH: 'Couch'
+   (300a, 0354) Patient Support Accessory Code      LO: 'AC123'
+   (300a, 03a8)  Ion Control Point Sequence  16 item(s) ---- 
+      (300a, 0112) Control Point Index                 IS: '0'
+      (300a, 0114) Nominal Beam Energy                 DS: '106.454'
+      (300a, 011e) Gantry Angle                        DS: '90.0'
+      (300a, 011f) Gantry Rotation Direction           CS: 'NONE'
+      (300a, 0120) Beam Limiting Device Angle          DS: '0.0'
+      (300a, 0121) Beam Limiting Device Rotation Direc CS: 'NONE'
+      (300a, 0122) Patient Support Angle               DS: '0.0'
+      (300a, 0123) Patient Support Rotation Direction  CS: 'NONE'
+      (300a, 0128) Table Top Vertical Position         DS: '0.0'
+      (300a, 0129) Table Top Longitudinal Position     DS: '450.0'
+      (300a, 012a) Table Top Lateral Position          DS: '0.0'
+      (300a, 012c) Isocenter Position                  DS: [150, -117.5, 0]
+      (300a, 0134) Cumulative Meterset Weight          DS: '0.0'
+      (300a, 0140) Table Top Pitch Angle               FL: 0.0
+      (300a, 0142) Table Top Pitch Rotation Direction  CS: 'NONE'
+      (300a, 0144) Table Top Roll Angle                FL: 0.0
+      (300a, 0146) Table Top Roll Rotation Direction   CS: 'NONE'
+      (300a, 014a) Gantry Pitch Angle                  FL: None
+      (300a, 014c) Gantry Pitch Rotation Direction     CS: ''
+      (300a, 030d) Snout Position                      FL: 421.0
+      (300a, 035a) Meterset Rate                       FL: 100.0
+      (300a, 0370)  Lateral Spreading Device Settings Sequence  2 item(s) ---- 
+         (300a, 033c) Lateral Spreading Device Water Equi FL: 0.0
+         (300a, 0372) Lateral Spreading Device Setting    LO: 'IN'
+         (300a, 0374) Isocenter to Lateral Spreading Devi FL: 2000.0
+         (300c, 0102) Referenced Lateral Spreading Device IS: '1'
+         ---------
+         (300a, 033c) Lateral Spreading Device Water Equi FL: 0.0
+         (300a, 0372) Lateral Spreading Device Setting    LO: 'IN'
+         (300a, 0374) Isocenter to Lateral Spreading Devi FL: 2560.0
+         (300c, 0102) Referenced Lateral Spreading Device IS: '2'
+         ---------
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '311'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 622 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 311 elements
+      (300a, 0398) Scanning Spot Size                  FL: [11.334925651550293, 11.202466011047363]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'\xf8\x99\xaaB'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '0.0'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+      (300a, 0112) Control Point Index                 IS: '1'
+      (300a, 0114) Nominal Beam Energy                 DS: '106.454'
+      (300a, 0134) Cumulative Meterset Weight          DS: '4005.531818'
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '311'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 622 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 311 elements
+      (300a, 0398) Scanning Spot Size                  FL: [11.334925651550293, 11.202466011047363]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'\xf8\x99\xaaB'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '0.38666793621068'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+      (300a, 0112) Control Point Index                 IS: '2'
+      (300a, 0114) Nominal Beam Energy                 DS: '103.154'
+      (300a, 0134) Cumulative Meterset Weight          DS: '4005.531818'
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '312'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 624 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 312 elements
+      (300a, 0398) Scanning Spot Size                  FL: [11.530116081237793, 11.391291618347168]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'N^\xa1B'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '0.38666793621068'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+      (300a, 0112) Control Point Index                 IS: '3'
+      (300a, 0114) Nominal Beam Energy                 DS: '103.154'
+      (300a, 0134) Cumulative Meterset Weight          DS: '5477.359091'
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '312'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 624 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 312 elements
+      (300a, 0398) Scanning Spot Size                  FL: [11.530116081237793, 11.391291618347168]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'N^\xa1B'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '0.52874854871562'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+      (300a, 0112) Control Point Index                 IS: '4'
+      (300a, 0114) Nominal Beam Energy                 DS: '99.854'
+      (300a, 0134) Cumulative Meterset Weight          DS: '5477.359091'
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '287'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 574 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 287 elements
+      (300a, 0398) Scanning Spot Size                  FL: [11.72791576385498, 11.5824613571167]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'\xb7Y\x98B'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '0.52874854871562'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+      (300a, 0112) Control Point Index                 IS: '5'
+      (300a, 0114) Nominal Beam Energy                 DS: '99.854'
+      (300a, 0134) Cumulative Meterset Weight          DS: '6742.440909'
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '287'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 574 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 287 elements
+      (300a, 0398) Scanning Spot Size                  FL: [11.72791576385498, 11.5824613571167]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'\xb7Y\x98B'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '0.65087130242975'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+      (300a, 0112) Control Point Index                 IS: '6'
+      (300a, 0114) Nominal Beam Energy                 DS: '96.554'
+      (300a, 0134) Cumulative Meterset Weight          DS: '6742.440909'
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '296'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 592 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 296 elements
+      (300a, 0398) Scanning Spot Size                  FL: [11.974343299865723, 11.818153381347656]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'\t\x8d\x8fB'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '0.65087130242975'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+      (300a, 0112) Control Point Index                 IS: '7'
+      (300a, 0114) Nominal Beam Energy                 DS: '96.554'
+      (300a, 0134) Cumulative Meterset Weight          DS: '7732.813636'
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '296'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 592 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 296 elements
+      (300a, 0398) Scanning Spot Size                  FL: [11.974343299865723, 11.818153381347656]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'\t\x8d\x8fB'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '0.7464754308772'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+      (300a, 0112) Control Point Index                 IS: '8'
+      (300a, 0114) Nominal Beam Energy                 DS: '93.254'
+      (300a, 0134) Cumulative Meterset Weight          DS: '7732.813636'
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '296'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 592 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 296 elements
+      (300a, 0398) Scanning Spot Size                  FL: [12.220353126525879, 12.052571296691895]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'{\xcb\x86B'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '0.7464754308772'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+      (300a, 0112) Control Point Index                 IS: '9'
+      (300a, 0114) Nominal Beam Energy                 DS: '93.254'
+      (300a, 0134) Cumulative Meterset Weight          DS: '8536.504545'
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '296'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 592 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 296 elements
+      (300a, 0398) Scanning Spot Size                  FL: [12.220353126525879, 12.052571296691895]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'{\xcb\x86B'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '0.82405851328783'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+      (300a, 0112) Control Point Index                 IS: '10'
+      (300a, 0114) Nominal Beam Energy                 DS: '89.954'
+      (300a, 0134) Cumulative Meterset Weight          DS: '8536.504545'
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '287'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 574 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 287 elements
+      (300a, 0398) Scanning Spot Size                  FL: [12.466546058654785, 12.286299705505371]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'\x11\xe8|B'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '0.82405851328783'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+      (300a, 0112) Control Point Index                 IS: '11'
+      (300a, 0114) Nominal Beam Energy                 DS: '89.954'
+      (300a, 0134) Cumulative Meterset Weight          DS: '9237.781818'
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '287'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 574 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 287 elements
+      (300a, 0398) Scanning Spot Size                  FL: [12.466546058654785, 12.286299705505371]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'\x11\xe8|B'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '0.89175525074572'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+      (300a, 0112) Control Point Index                 IS: '12'
+      (300a, 0114) Nominal Beam Energy                 DS: '86.654'
+      (300a, 0134) Cumulative Meterset Weight          DS: '9237.781818'
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '273'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 546 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 273 elements
+      (300a, 0398) Scanning Spot Size                  FL: [12.781510353088379, 12.575967788696289]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'\xfc\xadlB'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '0.89175525074572'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+      (300a, 0112) Control Point Index                 IS: '13'
+      (300a, 0114) Nominal Beam Energy                 DS: '86.654'
+      (300a, 0134) Cumulative Meterset Weight          DS: '9806.309091'
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '273'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 546 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 273 elements
+      (300a, 0398) Scanning Spot Size                  FL: [12.781510353088379, 12.575967788696289]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'\xfc\xadlB'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '0.94663716838335'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+      (300a, 0112) Control Point Index                 IS: '14'
+      (300a, 0114) Nominal Beam Energy                 DS: '83.354'
+      (300a, 0134) Cumulative Meterset Weight          DS: '9806.309091'
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '231'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 462 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 231 elements
+      (300a, 0398) Scanning Spot Size                  FL: [13.096260070800781, 12.8646821975708]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'\x9b\xea\\B'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '0.94663716838335'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+      (300a, 0112) Control Point Index                 IS: '15'
+      (300a, 0114) Nominal Beam Energy                 DS: '83.354'
+      (300a, 0134) Cumulative Meterset Weight          DS: '10359.1'
+      (300a, 0390) Scan Spot Tune ID                   SH: '4.0'
+      (300a, 0392) Number of Scan Spot Positions       IS: '231'
+      (300a, 0394) Scan Spot Position Map              FL: Array of 462 elements
+      (300a, 0396) Scan Spot Meterset Weights          FL: Array of 231 elements
+      (300a, 0398) Scanning Spot Size                  FL: [13.096260070800781, 12.8646821975708]
+      (300a, 039a) Number of Paintings                 IS: '1'
+      (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+      (300b, 1017) Private tag data                    VR.UN: b'\x9b\xea\\B'
+      (300c, 0050)  Referenced Dose Reference Sequence  1 item(s) ---- 
+         (300a, 010c) Cumulative Dose Reference Coefficie DS: '1.0'
+         (300c, 0051) Referenced Dose Reference Number    IS: '1'
+         ---------
+      ---------
+   (300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+   (300b, 1002) [Unknown]                           FL: 500.0
+   (300b, 1004) [Unknown]                           FL: 84.9665298461914
+   (300b, 100e) [Unknown]                           FL: 31.19999885559082
+   (300c, 006a) Referenced Patient Setup Number     IS: '1'
+   (300c, 00a0) Referenced Tolerance Table Number   IS: '1'
+   ---------
+(300b, 0010) Private Creator                     VR.LO: 'IMPAC'
+(300b, 1008) Private tag data                    VR.UN: b'v1'
+(300c, 0060)  Referenced Structure Set Sequence  1 item(s) ---- 
+   (0008, 1150) Referenced SOP Class UID            UI: RT Structure Set Storage
+   (0008, 1155) Referenced SOP Instance UID         UI: 1.2.246.352.71.4.361940808526.12071.20190918133435
+   ---------
+(300e, 0002) Approval Status                     CS: 'APPROVED'
+(3253, 0010) Private Creator                     VR.LO: 'Varian Medical Systems VISION 3253'
+(3253, 1000) [XML stream.]                       UN: Array of 1052 elements
+(3253, 1001) [Data length of the XML stream]     UN: b'1052'
+(3253, 1002) [Extended Interface Format tag]     UN: b'ExtendedIF'
+
