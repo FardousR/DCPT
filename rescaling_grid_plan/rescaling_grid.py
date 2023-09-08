@@ -8,6 +8,8 @@ import pydicom
 
 logger = logging.getLogger(__name__)
 
+MU_MIN = 1.0
+
 
 def read_weights_from_csv(csv_file_path):
     weights = []
@@ -89,6 +91,7 @@ def main(args=None):
 
     original_cumulative_weight = 0.0  # per energy layer
     new_cumulative_weight = 0.0  # per energy layer
+    points_discarded = 0
 
     for i, icp in enumerate(ion_control_point_sequence):
 
@@ -101,7 +104,17 @@ def main(args=None):
             csv_weight = csv_weights[int(i * 0.5)]
         else:
             csv_weight = 1.0
-        new_weights = [w * scale_factor * csv_weight for w in weights]
+
+        new_weights = [0.0] * len(weights)
+
+        for i, w in enumerate(weights):
+            value = w * scale_factor * csv_weight
+            if value > 0.0 and value * meterset_per_weight < 1.0:
+                logger.debug(f"Discarding point with weight {value:.2f} and {value*meterset_per_weight:.2f} [MU]")
+                points_discarded += 1
+                value = 0.0
+            new_weights[i] = value
+
         icp.ScanSpotMetersetWeights = new_weights
 
         original_cumulative_weight += sum(weights)
@@ -126,6 +139,8 @@ def main(args=None):
     logger.info(f"Final Cumulative Weight after rescaling : {new_cumulative_weight:12.2f}")
     logger.info(f"Beam Meterset                           : {new_cumulative_weight * meterset_per_weight:12.2f} [MU]")
     logger.info(f"Weight rescaled plan is saved as        : {args.output}")
+    if points_discarded > 0:
+        logger.warning(f"Discarded {points_discarded} spots which were below {MU_MIN:.2f} [MU]")
 
 
 if __name__ == '__main__':
