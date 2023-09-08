@@ -8,7 +8,7 @@ import pydicom
 
 logger = logging.getLogger(__name__)
 
-MU_MIN = 1.0
+MU_MIN = 1.0  # at least this many MU in a single spot
 
 
 def read_weights_from_csv(csv_file_path):
@@ -62,16 +62,15 @@ def main(args=None):
     dcm = pydicom.dcmread(args.input)
     dcm_new = copy.deepcopy(dcm)
 
+    # not sure if beam dose is always given in dicom?
+    original_beam_dose = dcm.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamDose
     if (args.dose):
-        beam_dose = dcm.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamDose
-        scale_factor = args.dose / beam_dose
-        logger.debug(f"Beam dose: {beam_dose} Gy")
-        logger.debug(f"Target dose: {args.dose} Gy")
-        logger.debug(f"Scale factor: {scale_factor}")
+        scale_factor = args.dose / original_beam_dose
     else:
         scale_factor = args.scale_factor
 
-    logger.debug(f"Scale Factor: {scale_factor}")
+    new_beam_dose = original_beam_dose * scale_factor
+
     final_original_cumulative_weight = dcm.IonBeamSequence[0].FinalCumulativeMetersetWeight
     number_of_control_points = dcm.IonBeamSequence[0].NumberOfControlPoints
     number_of_energy_layers = int(number_of_control_points / 2)
@@ -85,6 +84,7 @@ def main(args=None):
                             match number of energy layers in dicom file {number_of_energy_layers}.")
 
     original_beam_meterset = dcm.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamMeterset
+    new_beam_meterset = original_beam_meterset * scale_factor
     meterset_per_weight = original_beam_meterset / final_original_cumulative_weight
 
     ion_control_point_sequence = dcm_new.IonBeamSequence[0].IonControlPointSequence  # all double energy layers
@@ -108,8 +108,8 @@ def main(args=None):
         new_weights = [0.0] * len(weights)
 
         for i, w in enumerate(weights):
-            value = w * scale_factor * csv_weight
-            if value > 0.0 and value * meterset_per_weight < 1.0:
+            value = w * csv_weight
+            if value > 0.0 and value * meterset_per_weight < MU_MIN:
                 logger.debug(f"Discarding point with weight {value:.2f} and {value*meterset_per_weight:.2f} [MU]")
                 points_discarded += 1
                 value = 0.0
@@ -128,20 +128,22 @@ def main(args=None):
 
     # set remaining meta data
     dcm_new.IonBeamSequence[0].FinalCumulativeMetersetWeight = new_cumulative_weight
-    dcm_new.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamMeterset = new_cumulative_weight \
-        * meterset_per_weight
-    if (args.dose):
-        dcm_new.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamDose = args.dose
+    dcm_new.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamMeterset = new_beam_meterset
+    dcm_new.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamDose = new_beam_dose
 
     dcm_new.save_as(args.output)
-
-    logger.info(f"Final Cumulative Weight before rescaling: {original_cumulative_weight:12.2f}")
-    logger.info(f"Final Cumulative Weight after rescaling : {new_cumulative_weight:12.2f}")
-    logger.info(f"Beam Meterset                           : {new_cumulative_weight * meterset_per_weight:12.2f} [MU]")
-    logger.info(f"Weight rescaled plan is saved as        : {args.output}")
+    hline = 72 * '-'
+    logger.info("                                  Original           New   ")
+    logger.info(hline)
+    logger.info(f"Final Cumulative Weight   : {original_cumulative_weight:14.2f}  {new_cumulative_weight:14.2f}  ")
+    logger.info(f"Beam Meterset             : {original_beam_meterset:14.2f}  {new_beam_meterset:14.2f}  [MU] ")
+    logger.info(f"Beam Dose                 : {original_beam_dose:14.2f}  {new_beam_dose:14.2f}  [Gy(RBE)]] ")
+    logger.info(hline)
+    logger.info(f"Weight rescaled plan is saved as : '{args.output}'")
     if points_discarded > 0:
         logger.warning(f"Discarded {points_discarded} spots which were below {MU_MIN:.2f} [MU]")
 
 
 if __name__ == '__main__':
+
     sys.exit(main(sys.argv[1:]))
