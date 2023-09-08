@@ -1,9 +1,10 @@
+import sys
 import argparse
 import logging
+import copy
 import csv
 import random
 import pydicom
-import copy
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +35,7 @@ def print_comparison(layer, scale_factor, original_weights, modified_weights, nu
         print(f"{original:8.4f} | {modified:8.4f}")
 
 
-def rescale():
+def main(args=None):
     parser = argparse.ArgumentParser(description='Modify DICOM file weights.')
     parser.add_argument('input', help='Path to DICOM file to be modified')
     parser.add_argument('-o', '--output', default="output.dcm", required=False, help='Path to output DICOM file')
@@ -59,10 +60,6 @@ def rescale():
     dcm = pydicom.dcmread(args.input)
     dcm_new = copy.deepcopy(dcm)
 
-    weights = None
-    if args.weights:
-        weights = read_weights_from_csv(args.weights)
-
     if (args.dose):
         beam_dose = dcm.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamDose
         scale_factor = args.dose / beam_dose
@@ -74,8 +71,16 @@ def rescale():
 
     logger.debug(f"Scale Factor: {scale_factor}")
     final_original_cumulative_weight = dcm.IonBeamSequence[0].FinalCumulativeMetersetWeight
-    # number_of_control_points = dcm.IonBeamSequence[0].NumberOfControlPoints
-    # number_of_energy_layers = int(number_of_control_points / 2)
+    number_of_control_points = dcm.IonBeamSequence[0].NumberOfControlPoints
+    number_of_energy_layers = int(number_of_control_points / 2)
+
+    csv_weights = None
+    if args.weights:
+        csv_weights = read_weights_from_csv(args.weights)
+        csv_weigths_len = len(csv_weights)
+        if csv_weigths_len != number_of_energy_layers:
+            raise Exception(f"CSV file energy layers {csv_weigths_len} must \
+                            match number of energy layers in dicom file {number_of_energy_layers}.")
 
     original_beam_meterset = dcm.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamMeterset
     meterset_per_weight = original_beam_meterset / final_original_cumulative_weight
@@ -92,7 +97,11 @@ def rescale():
         icp.CumulativeMetersetWeight = new_cumulative_weight
 
         weights = icp.ScanSpotMetersetWeights
-        new_weights = [w * scale_factor for w in weights]
+        if csv_weights:
+            csv_weight = csv_weights[int(i * 0.5)]
+        else:
+            csv_weight = 1.0
+        new_weights = [w * scale_factor * csv_weight for w in weights]
         icp.ScanSpotMetersetWeights = new_weights
 
         original_cumulative_weight += sum(weights)
@@ -107,18 +116,17 @@ def rescale():
     # set remaining meta data
     dcm_new.IonBeamSequence[0].FinalCumulativeMetersetWeight = new_cumulative_weight
     dcm_new.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamMeterset = new_cumulative_weight \
-                                                                               * meterset_per_weight
+                                                                            * meterset_per_weight
     if (args.dose):
         dcm_new.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamDose = args.dose
 
-    logger.debug(f"Beam Meterset: {new_cumulative_weight * meterset_per_weight} [MU]")
-
-    logger.info(f"Final Cumulative Weight before rescaling: {original_cumulative_weight}")
-    logger.info(f"Final Cumulative Weight after rescaling: {new_cumulative_weight}")
-
     dcm_new.save_as(args.output)
-    logger.info(f"Weight rescaled plan is saved as {args.output}")
+
+    logger.info(f"Final Cumulative Weight before rescaling: {original_cumulative_weight:12.2f}")
+    logger.info(f"Final Cumulative Weight after rescaling : {new_cumulative_weight:12.2f}")
+    logger.info(f"Beam Meterset                           : {new_cumulative_weight * meterset_per_weight:12.2f} [MU]")
+    logger.info(f"Weight rescaled plan is saved as        : {args.output}")
 
 
-if __name__ == "__main__":
-    rescale()
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:]))
