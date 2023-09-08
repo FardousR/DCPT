@@ -2,7 +2,6 @@ import sys
 import argparse
 import logging
 import copy
-import csv
 import random
 import pydicom
 from datetime import datetime
@@ -13,12 +12,12 @@ logger = logging.getLogger(__name__)
 MU_MIN = 1.0  # at least this many MU in a single spot
 
 
-def read_weights_from_csv(csv_file_path):
+def read_weights(csv_file_path):
     weights = []
-    with open(csv_file_path, 'r') as csvfile:
-        csvreader = csv.reader(csvfile)
-        for row in csvreader:
-            weights.append(float(row[0]))
+    with open(csv_file_path, 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            weights.append(float(line))
     return weights
 
 
@@ -86,7 +85,8 @@ def main(args=None):
 
     csv_weights = None
     if args.weights:
-        csv_weights = read_weights_from_csv(args.weights)
+        # csv_weights = read_weights_from_csv(args.weights)
+        csv_weights = read_weights(args.weights)
         csv_weigths_len = len(csv_weights)
         if csv_weigths_len != number_of_energy_layers:
             raise Exception(f"CSV file energy layers {csv_weigths_len} must \
