@@ -73,9 +73,12 @@ def rescale():
         scale_factor = args.scale_factor
 
     logger.debug(f"Scale Factor: {scale_factor}")
-    # final_original_cumulative_weight = dcm.IonBeamSequence[0].FinalCumulativeMetersetWeight
+    final_original_cumulative_weight = dcm.IonBeamSequence[0].FinalCumulativeMetersetWeight
     # number_of_control_points = dcm.IonBeamSequence[0].NumberOfControlPoints
     # number_of_energy_layers = int(number_of_control_points / 2)
+
+    original_beam_meterset = dcm.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamMeterset
+    meterset_per_weight = original_beam_meterset / final_original_cumulative_weight
 
     ion_control_point_sequence = dcm_new.IonBeamSequence[0].IonControlPointSequence  # all double energy layers
 
@@ -101,12 +104,20 @@ def rescale():
         if args.print:
             print_comparison(i, scale_factor, weights, new_weights, args.print)
 
+    # set remaining meta data
     dcm_new.IonBeamSequence[0].FinalCumulativeMetersetWeight = new_cumulative_weight
+    dcm_new.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamMeterset = new_cumulative_weight \
+                                                                               * meterset_per_weight
+    if (args.dose):
+        dcm_new.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamDose = args.dose
+
+    logger.debug(f"Beam Meterset: {new_cumulative_weight * meterset_per_weight} [MU]")
+
     logger.info(f"Final Cumulative Weight before rescaling: {original_cumulative_weight}")
     logger.info(f"Final Cumulative Weight after rescaling: {new_cumulative_weight}")
 
     dcm_new.save_as(args.output)
-    logger.debug(f"Weight rescaled plan is saved as {args.output}")
+    logger.info(f"Weight rescaled plan is saved as {args.output}")
 
 
 if __name__ == "__main__":
