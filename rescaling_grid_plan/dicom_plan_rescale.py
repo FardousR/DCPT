@@ -41,6 +41,7 @@ def main(args=None):
     parser = argparse.ArgumentParser(description='Modify DICOM file weights.')
     parser.add_argument('input', help='Path to DICOM file to be modified')
     parser.add_argument('-o', '--output', default="output.dcm", required=False, help='Path to output DICOM file')
+    parser.add_argument('-l', '--label', default=None, required=False, help='Label string for DICOM file')
     parser.add_argument('-w', '--weights', required=False, help='Optional path CSV file with weight per energy layer',
                         default=None)
     parser.add_argument('-p', '--print', type=int, default=None, help='Number of random values to print for comparison')
@@ -61,6 +62,9 @@ def main(args=None):
 
     dcm = pydicom.dcmread(args.input)
     dcm_new = copy.deepcopy(dcm)
+
+    if args.label:
+        dcm_new.RTPlanLabel = args.label
 
     # not sure if beam dose is always given in dicom?
     original_beam_dose = dcm.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamDose
@@ -101,19 +105,21 @@ def main(args=None):
 
         weights = icp.ScanSpotMetersetWeights
         if csv_weights:
-            csv_weight = csv_weights[int(i * 0.5)]
+            _ie = int(i * 0.5)
+            csv_weight = csv_weights[_ie]
+            logger.debug(f"CSV weight energy layer {_ie} {csv_weight}")
         else:
             csv_weight = 1.0
 
         new_weights = [0.0] * len(weights)
 
-        for i, w in enumerate(weights):
+        for j, w in enumerate(weights):
             value = w * csv_weight
             if value > 0.0 and value * new_meterset_per_weight < MU_MIN:
                 logger.debug(f"Discarding point with weight {value:.2f} and {value*new_meterset_per_weight:.2f} [MU]")
                 points_discarded += 1
                 value = 0.0
-            new_weights[i] = value
+            new_weights[j] = value
 
         icp.ScanSpotMetersetWeights = new_weights
 
