@@ -5,6 +5,8 @@ import copy
 import csv
 import random
 import pydicom
+from datetime import datetime
+
 
 logger = logging.getLogger(__name__)
 
@@ -65,6 +67,9 @@ def main(args=None):
 
     if args.label:
         dcm_new.RTPlanLabel = args.label
+    now = datetime.now()
+    dcm_new.RTPlanDate = now.strftime("%Y%m%d")
+    dcm_new.RTPlanTime = now.strftime("%H%M%S")
 
     # not sure if beam dose is always given in dicom?
     original_beam_dose = dcm.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamDose
