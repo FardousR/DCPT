@@ -85,7 +85,7 @@ def main(args=None):
 
     original_beam_meterset = dcm.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamMeterset
     new_beam_meterset = original_beam_meterset * scale_factor
-    meterset_per_weight = original_beam_meterset / final_original_cumulative_weight
+    new_meterset_per_weight = new_beam_meterset / final_original_cumulative_weight
 
     ion_control_point_sequence = dcm_new.IonBeamSequence[0].IonControlPointSequence  # all double energy layers
 
@@ -109,8 +109,8 @@ def main(args=None):
 
         for i, w in enumerate(weights):
             value = w * csv_weight
-            if value > 0.0 and value * meterset_per_weight < MU_MIN:
-                logger.debug(f"Discarding point with weight {value:.2f} and {value*meterset_per_weight:.2f} [MU]")
+            if value > 0.0 and value * new_meterset_per_weight < MU_MIN:
+                logger.debug(f"Discarding point with weight {value:.2f} and {value*new_meterset_per_weight:.2f} [MU]")
                 points_discarded += 1
                 value = 0.0
             new_weights[i] = value
@@ -139,9 +139,10 @@ def main(args=None):
     logger.info(f"Beam Meterset             : {original_beam_meterset:14.2f}  {new_beam_meterset:14.2f}  [MU] ")
     logger.info(f"Beam Dose                 : {original_beam_dose:14.2f}  {new_beam_dose:14.2f}  [Gy(RBE)]] ")
     logger.info(hline)
+    logger.info(f"Scale Factor : {scale_factor:.4f}")
     logger.info(f"Weight rescaled plan is saved as : '{args.output}'")
     if points_discarded > 0:
-        logger.warning(f"Discarded {points_discarded} spots which were below {MU_MIN:.2f} [MU]")
+        logger.warning(f" *** Discarded {points_discarded} spots which were below {MU_MIN:.2f} [MU] ***")
 
 
 if __name__ == '__main__':
