@@ -1,8 +1,11 @@
 import argparse
+import logging
 import csv
 import random
 import pydicom
 import copy
+
+logger = logging.getLogger(__name__)
 
 
 def read_weights_from_csv(csv_file_path):
@@ -33,68 +36,77 @@ def print_comparison(layer, scale_factor, original_weights, modified_weights, nu
 
 def rescale():
     parser = argparse.ArgumentParser(description='Modify DICOM file weights.')
-    parser.add_argument('-i', '--input', required=True, help='Path to input DICOM file')
-    parser.add_argument('-w', '--weights', required=False, help='Path to weights CSV file', default=None)
-    parser.add_argument('-o', '--output', required=True, help='Path to output DICOM file')
+    parser.add_argument('input', help='Path to DICOM file to be modified')
+    parser.add_argument('-o', '--output', default="output.dcm", required=False, help='Path to output DICOM file')
+    parser.add_argument('-w', '--weights', required=False, help='Optional path CSV file with weight per energy layer',
+                        default=None)
     parser.add_argument('-p', '--print', type=int, default=None, help='Number of random values to print for comparison')
-    parser.add_argument('-pd', '--plan_dose', type=float, default=None, help='Plan dose')
-    parser.add_argument('-rd', '--rescale_dose', type=float, default=None, help='Rescaled dose')
-    parser.add_argument('-s', '--scale_factor', type=float, default=None, help='Scale factor')
+    parser.add_argument('-v', '--verbosity', action='count', help="increase verbosity", default=0)
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-s', '--scale_factor', type=float, default=1.0, help='Scale factor to be applied everywhere')
+    group.add_argument('-d', '--dose', type=float, default=None, help='New target dose')
+
     args = parser.parse_args()
 
-    # # Check if neither weights nor rescale_dose/plan_dose are provided
-    # if args.weights is None and (args.plan_dose is None or args.rescale_dose is None):
-    #     print("Error: No scaling factor is given for rescaling the plan or spots.")
-    #     return
+    if args.verbosity == 1:
+        logging.basicConfig(level=logging.INFO)
+    elif args.verbosity > 1:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig()
 
-    dicom_data = pydicom.dcmread(args.input)
-    new_dicom_data = copy.deepcopy(dicom_data)
+    dcm = pydicom.dcmread(args.input)
+    dcm_new = copy.deepcopy(dcm)
 
-    # scale_factors = []
-    # if args.weights:
-    #     scale_factors = read_weights_from_csv(args.weights)
+    weights = None
+    if args.weights:
+        weights = read_weights_from_csv(args.weights)
 
-    ion_control_point_sequence = new_dicom_data.IonBeamSequence[0].IonControlPointSequence  # energy layers
+    if (args.dose):
+        beam_dose = dcm.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamDose
+        scale_factor = args.dose / beam_dose
+        logger.debug(f"Beam dose: {beam_dose} Gy")
+        logger.debug(f"Target dose: {args.dose} Gy")
+        logger.debug(f"Scale factor: {scale_factor}")
+    else:
+        scale_factor = args.scale_factor
 
-    # plan_rescale_ratio = 1.0  # Initialize to 1 so it doesn't affect multiplication if not set
-    # if args.plan_dose is not None and args.rescale_dose is not None:
-    #     plan_rescale_ratio = args.rescale_dose / args.plan_dose
+    logger.debug(f"Scale Factor: {scale_factor}")
+    # final_original_cumulative_weight = dcm.IonBeamSequence[0].FinalCumulativeMetersetWeight
+    # number_of_control_points = dcm.IonBeamSequence[0].NumberOfControlPoints
+    # number_of_energy_layers = int(number_of_control_points / 2)
 
-    # just hard-code doubel scale factor for now
-    scale_factor = 2.0
+    ion_control_point_sequence = dcm_new.IonBeamSequence[0].IonControlPointSequence  # all double energy layers
 
-    total_original_cumulative_weight = 0.0
-    total_new_cumulative_weight = 0.0
+    original_cumulative_weight = 0.0  # per energy layer
+    new_cumulative_weight = 0.0  # per energy layer
 
-    for i, _icp in enumerate(ion_control_point_sequence):
+    for i, icp in enumerate(ion_control_point_sequence):
 
-        print("energy layer", i)
-        weights = _icp.ScanSpotMetersetWeights
-        original_cumulative_weight = sum(weights)
-        total_original_cumulative_weight += original_cumulative_weight  # Add to total original cumulative weight
+        logger.debug(f" --------- Processing energy layer {i}")
 
-        # Modify the weights with both scale_factor and plan_rescale_ratio
+        icp.CumulativeMetersetWeight = new_cumulative_weight
 
+        weights = icp.ScanSpotMetersetWeights
         new_weights = [w * scale_factor for w in weights]
+        icp.ScanSpotMetersetWeights = new_weights
 
-        new_cumulative_weight = sum(new_weights)  # Calculate the new cumulative weight
-        total_new_cumulative_weight += new_cumulative_weight  # Add to total new cumulative weight
+        original_cumulative_weight += sum(weights)
+        new_cumulative_weight += sum(new_weights)  # Calculate the new cumulative weight
 
-        new_dicom_data.IonBeamSequence[0].IonControlPointSequence[i].ScanSpotMetersetWeights = new_weights
-        new_dicom_data.IonBeamSequence[0].IonControlPointSequence[i].CumulativeMetersetWeight = new_cumulative_weight
-
-        print(f"Layer {i} Cumulative Weight Before: {original_cumulative_weight}")
-        print(f"Layer {i} Cumulative Weight After: {new_cumulative_weight}")
+        logger.debug(f"Layer {i} Cumulative Weight Before: {original_cumulative_weight}")
+        logger.debug(f"Layer {i} Cumulative Weight After: {new_cumulative_weight}")
 
         if args.print:
             print_comparison(i, scale_factor, weights, new_weights, args.print)
 
-    new_dicom_data.IonBeamSequence[0].FinalCumulativeMetersetWeight = total_new_cumulative_weight
-    print(f"Total Cumulative Weight Before: {total_original_cumulative_weight}")
-    print(f"Total Cumulative Weight After: {total_new_cumulative_weight}")
+    dcm_new.IonBeamSequence[0].FinalCumulativeMetersetWeight = new_cumulative_weight
+    logger.info(f"Final Cumulative Weight before rescaling: {original_cumulative_weight}")
+    logger.info(f"Final Cumulative Weight after rescaling: {new_cumulative_weight}")
 
-    new_dicom_data.save_as(args.output)
-    print(f"Weight rescaled plan is saved as {args.output}")
+    dcm_new.save_as(args.output)
+    logger.debug(f"Weight rescaled plan is saved as {args.output}")
 
 
 if __name__ == "__main__":
