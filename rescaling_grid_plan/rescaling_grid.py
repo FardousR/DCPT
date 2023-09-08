@@ -116,7 +116,7 @@ def main(args=None):
     # set remaining meta data
     dcm_new.IonBeamSequence[0].FinalCumulativeMetersetWeight = new_cumulative_weight
     dcm_new.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamMeterset = new_cumulative_weight \
-                                                                            * meterset_per_weight
+        * meterset_per_weight
     if (args.dose):
         dcm_new.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamDose = args.dose
 
