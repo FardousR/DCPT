@@ -10,7 +10,7 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 
 MU_MIN = 1.0  # at least this many MU in a single spot
-
+hline = 72 * '-'
 
 def read_weights(csv_file_path):
     weights = []
@@ -131,19 +131,30 @@ def main(args=None):
         original_cumulative_weight += sum(weights)
         new_cumulative_weight += sum(new_weights)  # Calculate the new cumulative weight
 
-        logger.debug(f"Layer {i} Cumulative Weight Before: {original_cumulative_weight}")
-        logger.debug(f"Layer {i} Cumulative Weight After: {new_cumulative_weight}")
+        logger.debug(f"Layer {i:02} Cumulative Weight old-new: {original_cumulative_weight} - {new_cumulative_weight}")
 
         if args.print:
             print_comparison(i, scale_factor, weights, new_weights, args.print)
 
+    # repeat loop to set the CumulativeDoseReferenceCoefficient for each energy layer
+    cw = 0
+    logger.info("CumulativeDoseReferenceCoefficient   Original        New   ")
+    logger.info(hline)
+    for i, icp in enumerate(ion_control_point_sequence):
+        cdrc_origial = icp.ReferencedDoseReferenceSequence[0].CumulativeDoseReferenceCoefficient
+        cdrc_new = cw / new_cumulative_weight
+        icp.ReferencedDoseReferenceSequence[0].CumulativeDoseReferenceCoefficient = cdrc_new
+        cw += sum(icp.ScanSpotMetersetWeights)
+        logger.info(f"    Layer {i:02}                {cdrc_origial:14.3f}  {cdrc_new:14.3f}")
+    logger.info(hline)
+    logger.info("\n")
     # set remaining meta data
     dcm_new.IonBeamSequence[0].FinalCumulativeMetersetWeight = new_cumulative_weight
     dcm_new.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamMeterset = new_beam_meterset
     dcm_new.FractionGroupSequence[0].ReferencedBeamSequence[0].BeamDose = new_beam_dose
 
     dcm_new.save_as(args.output)
-    hline = 72 * '-'
+
     logger.info("                                  Original           New   ")
     logger.info(hline)
     logger.info(f"Final Cumulative Weight   : {original_cumulative_weight:14.2f}  {new_cumulative_weight:14.2f}  ")
